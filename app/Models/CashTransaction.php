@@ -4,24 +4,38 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Interfaces\Transaction;
-use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\TransactionRequest;
 
-class CashTransaction extends Model implements Transaction
+class CashTransaction implements Transaction
 {
-    public const ID = 1;
+    public const LIMIT = 5;
 
-    public function validate()
+    private int $amount = 0;
+    private array $inputs = [];
+
+    public function sourceId(): int
+    {
+        return 1;
+    }
+
+    public function processRequest(TransactionRequest $request): void
+    {
+        $this->amount = $request->getAmount();
+        $this->inputs = $request->getInputs();        
+    }
+
+    public function validate(): void
     {
 
     }
 
-    public function amount()
+    public function amount(): int
     {
-        
+        return $this->amount;
     }
 
-    public function inputs()
+    public function inputs(): array
     {
-        
+        return $this->inputs;
     }
 }
