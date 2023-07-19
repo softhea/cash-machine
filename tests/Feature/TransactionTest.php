@@ -36,9 +36,44 @@ class TransactionTest extends TestCase
         unset($content['created_at']);
 
         $this->assertSame($content, [
-            "source" => "CashTransaction",
+            "source" => "Cash",
             "amount" => 566,
             "inputs" => $inputs,
+        ]);
+    }
+
+    public function testCreateCardTransaction(): void
+    {
+        $request = [
+            'amount' => 173,
+            'credit_card' => '4234123412341234',
+            'expiration_date' => '11/2026',
+            'cvv' => 123,
+            'card_holder' => 'John Doe',
+        ];
+
+        $response = $this->post('/card-transactions', $request);
+
+        $response->assertCreated();
+
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertNotNull($content);
+        
+        $this->assertArrayHasKey('data', $content);
+
+        $content = $content['data'];
+
+        $this->assertArrayHasKey('id', $content);
+        $this->assertArrayHasKey('created_at', $content);
+
+        unset($content['id']);
+        unset($content['created_at']);
+
+        $this->assertSame($content, [
+            "source" => "Credit Card",
+            "amount" => $request['amount'],
+            "inputs" => $request,
         ]);
     }
 }

@@ -15,6 +15,7 @@ class CashMachine
             'amount' => $transaction->amount(),
             'inputs' => $transaction->inputs(),
         ]);
+        $newTransaction->source_name = $transaction->sourceName();
 
         return $newTransaction;
     }

@@ -5,18 +5,16 @@ namespace App\Models;
 
 use App\Interfaces\Transaction;
 
-class CashTransaction extends AbstractTransaction implements Transaction
+class CardTransaction extends AbstractTransaction implements Transaction
 {
-    public const LIMIT = 5;
-
     public function sourceId(): int
     {
-        return 1;
+        return 2;
     }
 
     public function sourceName(): string
     {
-        return 'Cash';
+        return 'Credit Card';
     }
 
     public function validate(): void

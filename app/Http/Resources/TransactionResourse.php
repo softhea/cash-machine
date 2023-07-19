@@ -12,7 +12,7 @@ class TransactionResourse extends JsonResource
     {
         return [
             'id' => $this->id,
-            'source' => 'CashTransaction',
+            'source' => $this->source_name,
             'amount' => $this->amount,
             'inputs' => $this->inputs,
             'created_at' => $this->created_at,

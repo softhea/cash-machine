@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CardTransactionController;
 use App\Http\Controllers\CashTransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,8 @@ Route::get('/', function () {
 
 Route::get('cash-transactions', [CashTransactionController::class, 'create']);
 Route::post('cash-transactions', [CashTransactionController::class, 'store']);
+
+Route::get('card-transactions', [CardTransactionController::class, 'create']);
+Route::post('card-transactions', [CardTransactionController::class, 'store']);
+
+Route::get('transactions', [TransactionController::class, 'index']);

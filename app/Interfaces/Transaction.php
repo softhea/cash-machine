@@ -8,6 +8,7 @@ use App\Interfaces\TransactionRequest;
 interface Transaction
 {
     public function sourceId(): int;
+    public function sourceName(): string;
     public function processRequest(TransactionRequest $request): void;
     public function validate(): void;
     public function amount(): int;
