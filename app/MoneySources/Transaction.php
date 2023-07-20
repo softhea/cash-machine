@@ -1,14 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Interfaces;
+namespace App\MoneySources;
 
-use App\Interfaces\TransactionRequest;
+use App\Requests\TransactionRequest;
 
 interface Transaction
 {
     public function sourceId(): int;
     public function sourceName(): string;
+    public function isCash(): bool;
     
     public function processRequest(TransactionRequest $request): void;
 

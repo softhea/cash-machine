@@ -5,8 +5,14 @@ namespace App\Requests;
 
 abstract class AbstractTransactionRequest
 {
-    protected int $amount = 0;
-    protected array $inputs = [];
+    protected int $amount;
+    protected array $inputs;
+
+    public function __construct(?array $request = null)
+    {
+        $this->amount = isset($request['amount']) ? (int)$request['amount'] : 0;
+        $this->inputs = (array)$request;
+    }
 
     public function getAmount(): int
     {

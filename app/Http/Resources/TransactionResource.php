@@ -15,7 +15,7 @@ class TransactionResource extends JsonResource
             'source' => $this->source_name,
             'amount' => $this->amount,
             'inputs' => $this->inputs,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }

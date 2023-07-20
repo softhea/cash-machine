@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Factories\TransactionFactory;
+use App\Exceptions\ValidationException;
+use App\MoneySources\TransactionFactory;
 use App\Http\Resources\TransactionResource;
-use App\Models\BankTransaction;
+use App\MoneySources\BankTransaction;
 use App\Requests\BankTransactionRequest;
 use App\Services\CashMachine;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class BankTransactionController extends Controller
@@ -17,7 +20,7 @@ class BankTransactionController extends Controller
 
     }
 
-    public function store(Request $request, CashMachine $cashMachine): TransactionResource
+    public function store(Request $request, CashMachine $cashMachine): TransactionResource|JsonResponse
     {
         $bankTransactionRequest = new BankTransactionRequest($request->input());
 
@@ -26,8 +29,24 @@ class BankTransactionController extends Controller
             $bankTransactionRequest
         );
 
-        $cashTransaction = $cashMachine->store($transaction);
-
+        try {
+            $cashTransaction = $cashMachine->store($transaction);
+        } catch (ValidationException $exception) {
+            return new JsonResponse(
+                [
+                    'error' => json_decode($exception->getMessage()),
+                ], 
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (Exception $exception) {
+            return new JsonResponse(
+                [
+                    'error' => $exception->getMessage(),
+                ], 
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        } 
+        
         return new TransactionResource($cashTransaction);
     }
 }

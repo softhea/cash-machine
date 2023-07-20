@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Factories;
+namespace App\MoneySources;
 
-use App\Interfaces\Transaction;
-use App\Interfaces\TransactionRequest;
+use App\Requests\TransactionRequest;
 
 class TransactionFactory
 {

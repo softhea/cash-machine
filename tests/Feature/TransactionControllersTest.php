@@ -2,27 +2,28 @@
 
 namespace Tests\Feature;
 
+use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class TransactionTest extends TestCase
+class TransactionControllersTest extends TestCase
 {
     use RefreshDatabase;
     
     public function testCreateCashTransaction(): void
     {
-        $inputs = [
-            1, 5, 10, 50, 50, 50, 100, 100, 100, 100,
+        $request = [
+            'banknotes' => [
+                1, 5, 10, 50, 50, 50, 100, 100, 100, 100,
+            ],
         ];
 
-        $response = $this->post('/cash-transactions', [
-            'banknotes' => $inputs,
-        ]);
+        $response = $this->post('/cash-transactions', $request);
 
         $response->assertCreated();
 
         $content = json_decode($response->getContent(), true);
-
+        
         $this->assertNotNull($content);
         
         $this->assertArrayHasKey('data', $content);
@@ -38,7 +39,7 @@ class TransactionTest extends TestCase
         $this->assertSame($content, [
             'source' => 'Cash',
             'amount' => 566,
-            'inputs' => $inputs,
+            'inputs' => $request,
         ]);
     }
 
@@ -46,7 +47,7 @@ class TransactionTest extends TestCase
     {
         $request = [
             'amount' => 173,
-            'credit_card' => '4234123412341234',
+            'card_number' => '4234123412341234',
             'expiration_date' => '11/2026',
             'cvv' => 123,
             'card_holder' => 'John Doe',
@@ -57,6 +58,7 @@ class TransactionTest extends TestCase
         $response->assertCreated();
 
         $content = json_decode($response->getContent(), true);
+        // dd($content);
 
         $this->assertNotNull($content);
         
@@ -109,5 +111,42 @@ class TransactionTest extends TestCase
             'amount' => $request['amount'],
             'inputs' => $request,
         ]);
+    }
+
+    public function testShowTransaction(): void
+    {
+        $transaction = [
+            'source_id' => 1,
+            'source_name' => 'Source Name',
+            'amount' => 50,
+            'inputs' => [
+                'key' => 'value',
+            ],
+        ];
+
+        $newTransaction = Transaction::query()->create($transaction);
+
+        $expectedTransaction = [
+            'id' => $newTransaction->id,
+            'source' => 'Source Name',
+            'amount' => 50,
+            'inputs' => [
+                'key' => 'value',
+            ],
+            'created_at' => $newTransaction->created_at->format('Y-m-d H:i:s'),
+        ];
+
+        $response = $this->get('/transactions/'.$newTransaction->id);
+
+        $response->assertOk();
+
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertNotNull($content);
+        $this->assertArrayHasKey('data', $content);
+
+        $content = $content['data'];
+
+        $this->assertSame($expectedTransaction, $content );
     }
 }

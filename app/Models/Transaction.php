@@ -13,6 +13,7 @@ class Transaction extends Model
     protected $fillable = [
         'source_id',
         'source_name',
+        'is_cache',
         'amount',
         'inputs',
     ];

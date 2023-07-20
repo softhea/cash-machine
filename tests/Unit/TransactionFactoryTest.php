@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\Factories\TransactionFactory;
-use App\Models\BankTransaction;
-use App\Models\CardTransaction;
-use App\Models\CashTransaction;
+use App\MoneySources\TransactionFactory;
+use App\MoneySources\BankTransaction;
+use App\MoneySources\CardTransaction;
+use App\MoneySources\CashTransaction;
 use App\Requests\BankTransactionRequest;
 use App\Requests\CardTransactionRequest;
 use App\Requests\CashTransactionRequest;
@@ -17,7 +17,7 @@ class TransactionFactoryTest extends TestCase
     {
         $request = [
             'banknotes' => [
-                50, 100,
+                '100', '50two', 'three',
             ],
         ];
         $cashTransactionRequest = new CashTransactionRequest($request);
@@ -29,7 +29,7 @@ class TransactionFactoryTest extends TestCase
 
         $this->assertInstanceOf(CashTransaction::class, $transaction);
         $this->assertSame(150, $transaction->amount());
-        $this->assertEquals($request['banknotes'], $transaction->inputs());
+        $this->assertEquals($request, $transaction->inputs());
     }
 
     public function testMakeCardTransaction(): void
