@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 
 use App\Factories\TransactionFactory;
 use App\Http\Resources\TransactionResource;
-use App\Models\CardTransaction;
-use App\Requests\CardTransactionRequest;
+use App\Models\BankTransaction;
+use App\Requests\BankTransactionRequest;
 use App\Services\CashMachine;
 use Illuminate\Http\Request;
 
-class CardTransactionController extends Controller
+class BankTransactionController extends Controller
 {
     public function create()
     {
@@ -19,13 +19,13 @@ class CardTransactionController extends Controller
 
     public function store(Request $request, CashMachine $cashMachine): TransactionResource
     {
-        $cardTransactionRequest = new CardTransactionRequest($request->input());
+        $bankTransactionRequest = new BankTransactionRequest($request->input());
 
         $transaction = TransactionFactory::make(
-            CardTransaction::class, 
-            $cardTransactionRequest
+            BankTransaction::class, 
+            $bankTransactionRequest
         );
-        
+
         $cashTransaction = $cashMachine->store($transaction);
 
         return new TransactionResource($cashTransaction);

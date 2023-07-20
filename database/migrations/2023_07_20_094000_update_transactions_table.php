@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->tinyInteger('source_id')->unsigned()->index()->nullable();
-            $table->integer('amount')->unsigned()->nullable();
-            $table->json('inputs')->nullable();
-            $table->timestamps();
+        Schema::table('transactions', function (Blueprint $table) {        
+            $table->string('source_name', 50)->after('source_id')->nullable();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropColumn('source_name');
+        });
     }
 };

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Factories\TransactionFactory;
-use App\Http\Resources\TransactionResourse;
+use App\Http\Resources\TransactionResource;
 use App\Models\CashTransaction;
 use App\Requests\CashTransactionRequest;
 use App\Services\CashMachine;
@@ -17,7 +17,7 @@ class CashTransactionController extends Controller
 
     }
 
-    public function store(Request $request, CashMachine $cashMachine): TransactionResourse
+    public function store(Request $request, CashMachine $cashMachine): TransactionResource
     {
         $cashTransactionRequest = new CashTransactionRequest($request->input());
 
@@ -25,10 +25,9 @@ class CashTransactionController extends Controller
             CashTransaction::class, 
             $cashTransactionRequest
         );
-        $transaction->validate();
 
         $cashTransaction = $cashMachine->store($transaction);
 
-        return new TransactionResourse($cashTransaction);
+        return new TransactionResource($cashTransaction);
     }
 }

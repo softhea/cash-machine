@@ -12,6 +12,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'source_id',
+        'source_name',
         'amount',
         'inputs',
     ];
