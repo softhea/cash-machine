@@ -17,7 +17,7 @@ class BankTransactionController extends Controller
 {
     public function create()
     {
-
+        return view('bank-transactions-create');
     }
 
     public function store(Request $request, CashMachine $cashMachine): TransactionResource|JsonResponse

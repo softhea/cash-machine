@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\MoneySources;
 
-enum BankNote: int
+enum Banknote: int
 {
     case BANKNOTE_1 = 1;
     case BANKNOTE_5 = 5;

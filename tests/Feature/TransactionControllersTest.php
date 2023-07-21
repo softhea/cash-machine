@@ -25,7 +25,6 @@ class TransactionControllersTest extends TestCase
         $content = json_decode($response->getContent(), true);
         
         $this->assertNotNull($content);
-        
         $this->assertArrayHasKey('data', $content);
 
         $content = $content['data'];
@@ -38,6 +37,7 @@ class TransactionControllersTest extends TestCase
 
         $this->assertSame($content, [
             'source' => 'Cash',
+            'is_cache' => true,
             'amount' => 566,
             'inputs' => $request,
         ]);
@@ -58,10 +58,8 @@ class TransactionControllersTest extends TestCase
         $response->assertCreated();
 
         $content = json_decode($response->getContent(), true);
-        // dd($content);
 
         $this->assertNotNull($content);
-        
         $this->assertArrayHasKey('data', $content);
 
         $content = $content['data'];
@@ -74,6 +72,7 @@ class TransactionControllersTest extends TestCase
 
         $this->assertSame($content, [
             'source' => 'Credit Card',
+            'is_cache' => false,
             'amount' => $request['amount'],
             'inputs' => $request,
         ]);
@@ -95,7 +94,6 @@ class TransactionControllersTest extends TestCase
         $content = json_decode($response->getContent(), true);
 
         $this->assertNotNull($content);
-        
         $this->assertArrayHasKey('data', $content);
 
         $content = $content['data'];
@@ -108,6 +106,7 @@ class TransactionControllersTest extends TestCase
 
         $this->assertSame($content, [
             'source' => 'Bank Transfer',
+            'is_cache' => false,
             'amount' => $request['amount'],
             'inputs' => $request,
         ]);
@@ -118,6 +117,7 @@ class TransactionControllersTest extends TestCase
         $transaction = [
             'source_id' => 1,
             'source_name' => 'Source Name',
+            'is_cache' => false,
             'amount' => 50,
             'inputs' => [
                 'key' => 'value',
@@ -129,6 +129,7 @@ class TransactionControllersTest extends TestCase
         $expectedTransaction = [
             'id' => $newTransaction->id,
             'source' => 'Source Name',
+            'is_cache' => false,
             'amount' => 50,
             'inputs' => [
                 'key' => 'value',
@@ -136,7 +137,7 @@ class TransactionControllersTest extends TestCase
             'created_at' => $newTransaction->created_at->format('Y-m-d H:i:s'),
         ];
 
-        $response = $this->get('/transactions/'.$newTransaction->id);
+        $response = $this->get('/api/transactions/'.$newTransaction->id);
 
         $response->assertOk();
 

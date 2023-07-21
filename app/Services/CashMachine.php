@@ -41,8 +41,7 @@ class CashMachine
      */
     private function validateAmount(): void
     {
-        $currentAmount = (int)TransactionModel::query()->sum('amount');
-        if ($currentAmount + $this->transaction->amount() > self::LIMIT) {
+        if ($this->getTotalAmount() + $this->transaction->amount() > self::LIMIT) {
             throw new Exception(
                 'Maximum Amount for Total Processing would be reached!'
             );
@@ -58,5 +57,10 @@ class CashMachine
             'amount' => $this->transaction->amount(),
             'inputs' => $this->transaction->inputs(),
         ]);
+    }
+
+    private function getTotalAmount(): int
+    {
+        return (int)TransactionModel::query()->sum('amount');
     }
 }

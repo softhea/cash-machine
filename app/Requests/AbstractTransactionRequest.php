@@ -19,18 +19,8 @@ abstract class AbstractTransactionRequest
         return $this->amount;
     }
 
-    public function setAmount(int $amount): void
-    {
-        $this->amount = $amount;
-    }
-
     public function getInputs(): array
     {
         return $this->inputs;
-    }
-
-    public function setInputs(array $inputs): void
-    {
-        $this->inputs = $inputs;
     }
 }

@@ -13,6 +13,7 @@ class TransactionResource extends JsonResource
         return [
             'id' => $this->id,
             'source' => $this->source_name,
+            'is_cache' => $this->is_cache,
             'amount' => $this->amount,
             'inputs' => $this->inputs,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

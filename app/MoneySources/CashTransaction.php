@@ -47,7 +47,7 @@ class CashTransaction extends AbstractTransaction implements Transaction
             'banknotes' => 'required|array|min:1',
             'banknotes.*' => [
                 'required',
-                'in:'.implode(',', array_column(BankNote::cases(), 'value')),
+                'in:'.implode(',', array_column(Banknote::cases(), 'value')),
             ],
         ];
     }
@@ -57,7 +57,7 @@ class CashTransaction extends AbstractTransaction implements Transaction
      */
     private function validateQuantities(int|string $banknoteValue): void
     {
-        $banknote = BankNote::tryFrom((int)$banknoteValue);
+        $banknote = Banknote::tryFrom((int)$banknoteValue);
         
         if (!array_key_exists($banknoteValue, $this->banknotes)) {
             $this->banknotes[$banknoteValue] = 0;
@@ -76,14 +76,14 @@ class CashTransaction extends AbstractTransaction implements Transaction
      */
     private function validateCashAmount(): void
     {
-        if ($this->getCurrentCashAmount() + $this->amount() > self::LIMIT) {
+        if ($this->getTotalCashAmount() + $this->amount() > self::LIMIT) {
             throw new Exception(
                 'Maximum Amount for Total Cash Processing would be reached!'
             );
         }
     }
 
-    private function getCurrentCashAmount(): int
+    private function getTotalCashAmount(): int
     {
         return (int)TransactionModel::query()
             ->where('is_cache', true)

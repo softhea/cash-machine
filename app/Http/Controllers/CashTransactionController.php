@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ValidationException;
 use App\MoneySources\TransactionFactory;
 use App\Http\Resources\TransactionResource;
+use App\MoneySources\BankNote;
 use App\MoneySources\CashTransaction;
 use App\Requests\CashTransactionRequest;
 use App\Services\CashMachine;
@@ -16,7 +18,9 @@ class CashTransactionController extends Controller
 {
     public function create()
     {
+        $banknotes = array_column(Banknote::cases(), 'value');
 
+        return view('cash-transactions-create', compact('banknotes'));
     }
 
     public function store(Request $request, CashMachine $cashMachine): TransactionResource|JsonResponse
@@ -30,6 +34,13 @@ class CashTransactionController extends Controller
 
         try {
             $cashTransaction = $cashMachine->store($transaction);
+        } catch (ValidationException $exception) {
+            return new JsonResponse(
+                [
+                    'error' => json_decode($exception->getMessage()),
+                ], 
+                JsonResponse::HTTP_BAD_REQUEST
+            );
         } catch (Exception $exception) {
             return new JsonResponse(
                 [
@@ -37,7 +48,7 @@ class CashTransactionController extends Controller
                 ], 
                 JsonResponse::HTTP_BAD_REQUEST
             );
-        }
+        } 
 
         return new TransactionResource($cashTransaction);
     }

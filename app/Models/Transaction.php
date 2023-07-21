@@ -19,6 +19,7 @@ class Transaction extends Model
     ];
 
     protected $casts = [
-        'inputs' => 'array'
+        'inputs' => 'array',
+        'is_cache' => 'boolean',
     ];
 }
