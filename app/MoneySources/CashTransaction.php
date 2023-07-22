@@ -11,8 +11,12 @@ class CashTransaction extends AbstractTransaction implements Transaction
     public const LIMIT = 10000;
 
     private array $banknotes = [];
+    private TransactionService $transactionService;
 
-    public function __construct(private TransactionService $transactionService) {}
+    public function setTransactionService(TransactionService $transactionService): void
+    {
+        $this->transactionService = $transactionService;
+    }
 
     public function sourceId(): int
     {
