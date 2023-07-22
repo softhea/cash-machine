@@ -14,6 +14,8 @@ class CashMachine
     private Transaction $transaction;
     private TransactionModel $newTransaction;
 
+    public function __construct(private TransactionService $transactionService) {}
+
     /**
      * @throws Exception
      */
@@ -41,7 +43,7 @@ class CashMachine
      */
     private function validateAmount(): void
     {
-        if ($this->getTotalAmount() + $this->transaction->amount() > self::LIMIT) {
+        if ($this->transactionService->getTotalAmount() + $this->transaction->amount() > self::LIMIT) {
             throw new Exception(
                 'Maximum Amount for Total Processing would be reached!'
             );
@@ -50,17 +52,6 @@ class CashMachine
 
     private function persist(): void
     {
-        $this->newTransaction = TransactionModel::query()->create([
-            'source_id' => $this->transaction->sourceId(),
-            'source_name' => $this->transaction->sourceName(),
-            'is_cache' => $this->transaction->isCash(),
-            'amount' => $this->transaction->amount(),
-            'inputs' => $this->transaction->inputs(),
-        ]);
-    }
-
-    private function getTotalAmount(): int
-    {
-        return (int)TransactionModel::query()->sum('amount');
+        $this->newTransaction = $this->transactionService->create($this->transaction);
     }
 }

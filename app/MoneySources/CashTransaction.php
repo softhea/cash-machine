@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\MoneySources;
 
-use App\Models\Transaction as TransactionModel;
+use App\Services\TransactionService;
 use Exception;
 
 class CashTransaction extends AbstractTransaction implements Transaction
@@ -11,6 +11,8 @@ class CashTransaction extends AbstractTransaction implements Transaction
     public const LIMIT = 10000;
 
     private array $banknotes = [];
+
+    public function __construct(private TransactionService $transactionService) {}
 
     public function sourceId(): int
     {
@@ -76,17 +78,10 @@ class CashTransaction extends AbstractTransaction implements Transaction
      */
     private function validateCashAmount(): void
     {
-        if ($this->getTotalCashAmount() + $this->amount() > self::LIMIT) {
+        if ($this->transactionService->getTotalCashAmount() + $this->amount() > self::LIMIT) {
             throw new Exception(
                 'Maximum Amount for Total Cash Processing would be reached!'
             );
         }
-    }
-
-    private function getTotalCashAmount(): int
-    {
-        return (int)TransactionModel::query()
-            ->where('is_cache', true)
-            ->sum('amount');
     }
 }

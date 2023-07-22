@@ -49,6 +49,8 @@ abstract class AbstractTransaction
                 $validator->errors()->toJson()
             );
         }
+
+        $this->inputs = $validator->validated();
     }
 
     protected function validationRules(): array
